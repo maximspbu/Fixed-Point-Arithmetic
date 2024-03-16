@@ -10,7 +10,8 @@ template <class T>
 class FIXP{
     public:
         FIXP(T num, uint8_t intPartSize, uint8_t fracPartSize);
-        T Transform();
+        void TransformToBinary(T num);
+        T TransformToDecimal();
         T operator+(Fixp& num);
         T operator-(Fixp& num);
         T operator*(Fixp& num);
