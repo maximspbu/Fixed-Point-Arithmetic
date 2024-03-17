@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <cstdint>
-#include <cmath>
 #include <iostream>
 #include <algorithm>
 
@@ -41,11 +40,21 @@ class FixedPointArithmetic{
         constexpr void SetNum(){
             num_ = delta_ / static_cast<double>(1 << e_);
         }
-        constexpr bool operator<(FixedPointArithmetic<T, E>& fpa);
-        constexpr bool operator<=(FixedPointArithmetic<T, E>& fpa);
-        constexpr bool operator==(FixedPointArithmetic<T, E>& fpa);
-        constexpr bool operator>(FixedPointArithmetic<T, E>& fpa);
-        constexpr bool operator>=(FixedPointArithmetic<T, E>& fpa);
+        constexpr bool operator<(FixedPointArithmetic<T, E>& fpa){
+            return delta_ < fpa.delta_;
+        }
+        constexpr bool operator<=(FixedPointArithmetic<T, E>& fpa){
+            return delta_ <= fpa.delta_;
+        }
+        constexpr bool operator==(FixedPointArithmetic<T, E>& fpa){
+            return delta_ == fpa.delta_;
+        }
+        constexpr bool operator>(FixedPointArithmetic<T, E>& fpa){
+            return delta_ > fpa.delta_;
+        }
+        constexpr bool operator>=(FixedPointArithmetic<T, E>& fpa){
+            return delta_ >= fpa.delta_;
+        }
         friend std::ostream& operator<<(std::ostream& os, const FixedPointArithmetic<T, E>& fpa){
             os << "num: " << fpa.delta_ / static_cast<double>(1 << fpa.e_) << ", e: " << fpa.e_ << ", delta: " << fpa.delta_ << '\n';
             return os;
