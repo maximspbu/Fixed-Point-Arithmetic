@@ -12,24 +12,47 @@
 template <class T, class E>
 class FixedPointArithmetic{
     public:
-        FixedPointArithmetic(T num, E e):num_(static_cast<E>(num*pow(2, e))), e_(e){};
-        FixedPointArithmetic<T, E> operator+(FixedPointArithmetic<T, E>& fpa){
+        FixedPointArithmetic(T num, E e): delta_(num * (1 << e)), e_(e), num_(num){};
+        constexpr FixedPointArithmetic<T, E> operator+(FixedPointArithmetic<T, E>& fpa){
             FixedPointArithmetic<T, E> fpa_(0, std::max(e_, fpa.e_));
-            fpa_.num_ = (num_  << (fpa.e_ - e_)) + fpa.num_;
-            return fixp_;
+            fpa_.delta_ = (delta_  << (fpa.e_ - e_)) + fpa.delta_;
+            return fpa_;
         }
-        FixedPointArithmetic<T, E> operator-(FixedPointArithmetic<T, E>& fpa);
-        FixedPointArithmetic<T, E> operator*(FixedPointArithmetic<T, E>& fpa);
-        FixedPointArithmetic<T, E> operator/(FixedPointArithmetic<T, E>& fpa);
-        bool operator<(FixedPointArithmetic<T, E>& fpa);
-        bool operator==(FixedPointArithmetic<T, E>& fpa);
-        bool operator>(FixedPointArithmetic<T, E>& fpa);
+        constexpr FixedPointArithmetic<T, E> operator-(FixedPointArithmetic<T, E>& fpa){
+            FixedPointArithmetic<T, E> fpa_(0, std::max(e_, fpa.e_));
+            fpa_.delta_ = (delta_  << (fpa.e_ - e_)) - fpa.delta_;
+            return fpa_;
+        }
+        constexpr FixedPointArithmetic<T, E> operator*(FixedPointArithmetic<T, E>& fpa){
+            FixedPointArithmetic<T, E> fpa_(0, std::max(e_, fpa.e_));
+            fpa_.delta_ = (delta_ * fpa.delta_);
+            fpa_.e_ = std::max(e_, fpa.e_) + std::min(e_, fpa.e_);
+            return fpa_;
+        }
+        constexpr FixedPointArithmetic<T, E> operator/(FixedPointArithmetic<T, E>& fpa){
+            if (fpa.delta_ == 0){
+                throw "Division by zero!";
+            }
+            FixedPointArithmetic<T, E> fpa_(0, std::max(e_, fpa.e_));
+            fpa_.delta_ = (delta_ / fpa.delta_);
+            fpa_.e_ = std::max(e_, fpa.e_) - std::min(e_, fpa.e_);
+            return fpa_;
+        }
+        constexpr void SetNum(){
+            num_ = delta_ / static_cast<double>(1 << e_);
+        }
+        constexpr bool operator<(FixedPointArithmetic<T, E>& fpa);
+        constexpr bool operator<=(FixedPointArithmetic<T, E>& fpa);
+        constexpr bool operator==(FixedPointArithmetic<T, E>& fpa);
+        constexpr bool operator>(FixedPointArithmetic<T, E>& fpa);
+        constexpr bool operator>=(FixedPointArithmetic<T, E>& fpa);
         friend std::ostream& operator<<(std::ostream& os, const FixedPointArithmetic<T, E>& fpa){
-            os << "num: " << fpa.num_/pow(2, fpa.e_) << ", e: " << fpa.e_ << '\n';
+            os << "num: " << fpa.delta_ / static_cast<double>(1 << fpa.e_) << ", e: " << fpa.e_ << ", delta: " << fpa.delta_ << '\n';
             return os;
         }
     private:
-        E num_;
+        T num_;
+        int64_t delta_;
         E e_;
 };
 
