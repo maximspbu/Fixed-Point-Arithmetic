@@ -1,4 +1,4 @@
-#include "fixp.h"
+#include "fpa.h"
 
 int main(){
     double n1 = 1.23;
