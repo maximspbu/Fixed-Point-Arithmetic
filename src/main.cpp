@@ -29,5 +29,7 @@ int main(){
     std::cout << "divide:\n";
     num1 /= num2;
     std::cout << num1;
+    std::cout << "log2:\n";
+    std::cout << num1.log2() << '\n';
     return 0;
 }
