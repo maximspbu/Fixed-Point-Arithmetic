@@ -32,7 +32,7 @@ class FixedPointArithmetic{
         }
         constexpr FixedPointArithmetic<T, D, E> operator/(FixedPointArithmetic<T, D, E>& fpa){
             if (fpa.delta_ == 0){
-                throw "Division by zero!";
+                throw std::runtime_error("Division by zero!");
             }
             FixedPointArithmetic<T, D, E> fpa_(0, 0);
             (e_ < fpa.e_)? fpa_.delta_ = ((delta_  << (fpa.e_ - e_) << e_) / fpa.delta_) : fpa_.delta_ = ((delta_ << fpa.e_) / (fpa.delta_  << (e_-fpa.e_)));
@@ -53,7 +53,7 @@ class FixedPointArithmetic{
         }
         constexpr void operator/=(FixedPointArithmetic<T, D, E>& fpa){
             if (fpa.delta_ == 0){
-                throw "Division by zero!";
+                throw std::runtime_error("Division by zero!");
             }
             (e_ < fpa.e_)? delta_ = ((delta_  << (fpa.e_ - e_) << e_) / fpa.delta_) : delta_ = ((delta_ << fpa.e_) / (fpa.delta_  << (e_ - fpa.e_)));
             e_ = std::min(e_, fpa.e_);
@@ -61,7 +61,7 @@ class FixedPointArithmetic{
         constexpr T log2(){
             T log = 0;
             if (delta_ <= 0){
-                throw "Log is not defined!";
+                throw std::runtime_error("Log is not defined!");
             } else if (delta_ == (1 << e_)){
                 return log;
             }
